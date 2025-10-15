@@ -51,30 +51,53 @@ async function getLienProfile(unUtilisateur) {
 }
 
 async function getStatsCombatUtilisateur(unUtilisateur) {
-    const utilisateur = await getUtilisateur(unUtilisateur);
+  const utilisateur = await getUtilisateur(unUtilisateur);
 
-    const sommaireListeCombat = new Map();
+  const sommaireListeCombat = new Map();
 
-    sommaireListeCombat.set("Guerre Étoiles", utilisateur.warStars);
-    sommaireListeCombat.set("Attaques Gagnées", utilisateur.attackWins);
-    sommaireListeCombat.set("Défenses Gagnées", utilisateur.defenseWins);
-    sommaireListeCombat.set(
-      "Ligue",
-      utilisateur.league ? utilisateur.league.name : "Aucune"
-    );
-    sommaireListeCombat.set(
-      "Trophées Builder",
-      utilisateur.versusTrophies ?? "Aucun"
-    );
-    sommaireListeCombat.set(
-      "Meilleur Trophées Builder",
-      utilisateur.bestTrophies ?? "Aucun"
-    );
-    sommaireListeCombat.set(
-      "Attaques Gagnées Builder",
-      utilisateur.versusBattleWins ?? "Aucun"
-    );
-    return sommaireListeCombat;
+  sommaireListeCombat.set("Guerre Étoiles", utilisateur.warStars);
+  sommaireListeCombat.set("Attaques Gagnées", utilisateur.attackWins);
+  sommaireListeCombat.set("Défenses Gagnées", utilisateur.defenseWins);
+  sommaireListeCombat.set(
+    "Ligue",
+    utilisateur.league ? utilisateur.league.name : "Aucune"
+  );
+  sommaireListeCombat.set(
+    "Trophées Builder",
+    utilisateur.versusTrophies ?? "Aucun"
+  );
+  sommaireListeCombat.set(
+    "Meilleur Trophées Builder",
+    utilisateur.bestTrophies ?? "Aucun"
+  );
+  sommaireListeCombat.set(
+    "Attaques Gagnées Builder",
+    utilisateur.versusBattleWins ?? "Aucun"
+  );
+
+  let troupes = "";
+  if (Array.isArray(utilisateur.homeTroops) && utilisateur.homeTroops.length) {
+    utilisateur.homeTroops.forEach((item) => {
+      troupes += `**${item.name}** : ${item.level}\n`;
+    });
+  } else {
+    troupes = "Aucune";
+  }
+  sommaireListeCombat.set(`Troupes :\n`, troupes);
+
+  let superTroupes = "";
+  if (
+    Array.isArray(utilisateur.superTroops) &&
+    utilisateur.superTroops.length
+  ) {
+    utilisateur.superTroops.forEach((item) => {
+      superTroupes += `**${item.name}** : ${item.level}\n`;
+    });
+  } else {
+    superTroupes = "Aucune";
+  }
+  sommaireListeCombat.set(`Troupes2 :\n`, superTroupes);
+  return sommaireListeCombat;
 }
 
 async function getStatsCombatUtilisateurEmbed(tag) {
@@ -82,8 +105,8 @@ async function getStatsCombatUtilisateurEmbed(tag) {
   const unNom = unSommaireJoueur.get("Nom");
 
   let description = "";
-  unSommaireJoueur.forEach((value, key) => {
-    description += `**${key}** : ${value}\n`;
+  unSommaireJoueur.forEach((index, item) => {
+    description += `**${item}** : ${index}\n`;
   });
 
   const embedJoueurCOC = new EmbedBuilder()
